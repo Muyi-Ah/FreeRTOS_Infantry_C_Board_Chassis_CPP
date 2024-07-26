@@ -20,6 +20,7 @@ constexpr auto kReverseOperateCoeficient = 2;
 
 static void ORE_Solve();
 void HaltFunction();
+void SubMode00Function();
 void SubMode11Function();
 void SubMode12Function();
 void SubMode13Function();
@@ -106,6 +107,14 @@ void ChassisTask(void* argument) {
                         motor_203.is_enable_ = false;
                         motor_204.is_enable_ = false;
                         state_machine.HandleEvent(kEventEnterHalt);
+                        break;
+
+                    case kSubMode00:  //切换到接收机断联模式
+                        SubMode00Function();
+                        motor_201.is_enable_ = true;
+                        motor_202.is_enable_ = true;
+                        motor_203.is_enable_ = true;
+                        motor_204.is_enable_ = true;
                         break;
 
                     case kSubMode11:  //切到维护模式
@@ -233,13 +242,15 @@ void ChassisTask(void* argument) {
 static bool RemoteTargetHandle() {
     bool is_move = false;
     if (dr16.remote_.ch2_ < 1024 - kRemoteDeadBand || dr16.remote_.ch2_ > 1024 + kRemoteDeadBand) {
-        temp_vx = (float)((dr16.remote_.ch2_ - 1024) * kRemoteWheelsCoefficient);
+        // temp_vx = (float)((dr16.remote_.ch2_ - 1024) * kRemoteWheelsCoefficient);
+        temp_vx = (float)((dr16.remote_.ch2_ - 1024) / 660 * max_rpm);
         is_move = true;
     } else {
         temp_vx = 0;
     }
     if (dr16.remote_.ch3_ < 1024 - kRemoteDeadBand || dr16.remote_.ch3_ > 1024 + kRemoteDeadBand) {
-        temp_vy = (float)((dr16.remote_.ch3_ - 1024) * kRemoteWheelsCoefficient);
+        // temp_vy = (float)((dr16.remote_.ch3_ - 1024) * kRemoteWheelsCoefficient);
+        temp_vy = (float)((dr16.remote_.ch3_ - 1024) / 660 * max_rpm);
         is_move = true;
     } else {
         temp_vy = 0;
@@ -261,6 +272,12 @@ static void WheelsRpmCompute() {
 }
 
 void HaltFunction() {}
+void SubMode00Function() {
+    target_rpm_201 = 0;
+    target_rpm_202 = 0;
+    target_rpm_203 = 0;
+    target_rpm_204 = 0;
+}
 void SubMode11Function() {}
 void SubMode12Function() {
     //获取系统时间戳，单位为ms
@@ -386,8 +403,6 @@ void SubMode33Function() {
         }
 
         //  =================================================================
-
-        vw = 0;
     }
 
     //超速
@@ -461,6 +476,12 @@ void TimeStampClear() {
 
 void SubStateUpdate() {
     switch (dr16.remote_.s1_) {
+        case 0:
+            if (dr16.remote_.s2_ == 0) {
+                state_machine.HandleEvent(kEventSwitchSubMode00);
+            }
+            break;
+            
         case 1:
             switch (dr16.remote_.s2_) {
                 case 1:

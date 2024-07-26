@@ -4,12 +4,13 @@ DjiMotor motor_201(0x201);  //驱动轮
 DjiMotor motor_202(0x202);  //驱动轮
 DjiMotor motor_203(0x203);  //驱动轮
 DjiMotor motor_204(0x204);  //驱动轮
+//电机数组
 DjiMotor* dji_motor_list[kMotorCount] = {
     &motor_201,
     &motor_202,
     &motor_203,
     &motor_204,
-};  //电机数组
+};
 
 //微分跟踪器 用于电机速度滤波
 TD td_201(200, 0.001);
@@ -27,6 +28,7 @@ StateMachine state_machine;  //状态机
 Capacity capacity;           //超级电容
 Communicator comm;           //板间通信
 Referee referee;             //裁判系统
+ErrorHandle error_handle;    //错误处理
 
 //UI
 UILayerDelete UIDelete(103, 0x167);

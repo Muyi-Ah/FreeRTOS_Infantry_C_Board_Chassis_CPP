@@ -89,6 +89,13 @@ const osThreadAttr_t communicationTa_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
+/* Definitions for errorHandleTask */
+osThreadId_t errorHandleTaskHandle;
+const osThreadAttr_t errorHandleTask_attributes = {
+  .name = "errorHandleTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityBelowNormal,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -101,6 +108,7 @@ extern void CapacityTask(void *argument);
 extern void UITask(void *argument);
 extern void RefereeDetectTask(void *argument);
 extern void CommunicationTask(void *argument);
+extern void ErrorHandleTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -148,6 +156,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of communicationTa */
   communicationTaHandle = osThreadNew(CommunicationTask, NULL, &communicationTa_attributes);
+
+  /* creation of errorHandleTask */
+  errorHandleTaskHandle = osThreadNew(ErrorHandleTask, NULL, &errorHandleTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

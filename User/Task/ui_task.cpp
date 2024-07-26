@@ -13,16 +13,21 @@
 #include "value_voltage.hpp"
 #include "variables.hpp"
 
+static void UI_ID_Update();
+
 interaction_figure_t interaction_figure_oneline = {"on", 1, 0, 2, 6, 0, 0, 5, 0, 512, 0, 1920, 512};
 
-bool ui_test_flag;
+bool ui_test_flag;  //测试用
 bool ctrl_latch;
 bool dynamic_flag;
 bool delete_flag;
 void UITask(void* argument) {
     for (;;) {
-        //清除所有UI
+        //重置UI
         if (dr16.KeyBoard_.key_.CTRL_key && ctrl_latch == false) {
+
+            UI_ID_Update();  //ID更新
+
             ctrl_latch = true;
             delete_flag = true;
 
@@ -115,4 +120,25 @@ void UITask(void* argument) {
 
         osDelay(10);
     }
+}
+
+static uint16_t GetRobotID() {
+    return referee.robot_status.robot_id;
+}
+
+static uint16_t GetClientID() {
+    return referee.robot_status.robot_id + 0x100;
+}
+
+static void UI_ID_Update() {
+    uint16_t sender_id = GetRobotID();
+    uint16_t receiver_id = GetClientID();
+    UIDelete.SetID(sender_id, receiver_id);
+    const_character_voltage.SetID(sender_id, receiver_id);
+    const_character_maxrpm.SetID(sender_id, receiver_id);
+    const_character_level.SetID(sender_id, receiver_id);
+    const_character_powerlimit.SetID(sender_id, receiver_id);
+    const_character_visionmode.SetID(sender_id, receiver_id);
+    var.SetID(sender_id, receiver_id);
+    oneline.SetID(sender_id, receiver_id);
 }

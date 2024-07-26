@@ -119,7 +119,6 @@ int32_t DjiMotor::AbsoluteErrorCompute(uint16_t target, enum DirectionType direc
             break;
 
         default:
-            //ErrorHandle(kSwitchError);  //错误处理
             break;
     }
 }
@@ -204,7 +203,6 @@ void DjiMotorSend() {
                 break;
 
             default:
-                //ErrorHandle(kSwitchError);  //错误处理
                 break;
         }
     }

@@ -1,14 +1,12 @@
 #pragma once
+#include "config.hpp"
 
-enum ErrorType {
-    kPointerError,
-    kHalLibError,
-    kSwitchError,
-    kMotorError,
-    kDr16Error,
-    kImuError,
-    kComuError,
-    kVisionError,
+class ErrorHandle {
+   public:
+    bool motor_is_offline[kMotorCount];  //电机掉线标志
+    bool communication_is_offline;       //板间通信掉线标志
+    bool referee_is_offline;             //裁判系统通信掉线标志
+
+    void Check();
+    void Handle();
 };
-
-void ErrorHandle(enum ErrorType error_type);

@@ -9,16 +9,15 @@
 #include "capacity.hpp"
 #include "referee.hpp"
 #include "ui.hpp"
+#include "error_handle.hpp"
+#include "config.hpp"
 
-constexpr uint8_t kMotorCount = 4;
 extern DR16 dr16;
 extern DjiMotor motor_201;
 extern DjiMotor motor_202;
 extern DjiMotor motor_203;
 extern DjiMotor motor_204;
 extern DjiMotor* dji_motor_list[kMotorCount];
-
-extern StateMachine state_machine;
 
 extern TD td_201;
 extern TD td_202;
@@ -30,11 +29,11 @@ extern PID pid_vel_202;
 extern PID pid_vel_203;
 extern PID pid_vel_204;
 
+extern StateMachine state_machine;
 extern Capacity capacity;
-
 extern Communicator comm;
-
 extern Referee referee;
+extern ErrorHandle error_handle;
 
 extern UILayerDelete UIDelete;
 extern UIcharacterFigure const_character_voltage;
