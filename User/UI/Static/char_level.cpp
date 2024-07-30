@@ -12,11 +12,11 @@ void char_level_add_config(char* buf) {
     char_level.figure_tpye = kText;
     char_level.layer = 0;
     char_level.color = kGreen;
-    char_level.details_a = 30;
+    char_level.details_a = 25;
     char_level.details_b = 6;
-    char_level.width = 3;
-    char_level.start_x = 90;
-    char_level.start_y = 800;
+    char_level.width = 2;
+    char_level.start_x = 230;
+    char_level.start_y = 750;
     strcpy(buf, "Level:");
 }
 

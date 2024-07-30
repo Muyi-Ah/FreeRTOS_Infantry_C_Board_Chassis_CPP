@@ -13,5 +13,6 @@ class Capacity {
     void AskVoltage();
     void AskInputPower();
 
-   private:
+    void Ask_RCIA();
+    void SetMaxChargePower_RCIA();
 };

@@ -11,10 +11,10 @@ void var_voltage_add_config() {
     var_voltage.figure_tpye = kFloat;
     var_voltage.layer = 1;
     var_voltage.color = kCyan;
-    var_voltage.details_a = 30;
-    var_voltage.width = 3;
-    var_voltage.start_x = 1040;
-    var_voltage.start_y = 150;
+    var_voltage.details_a = 25;
+    var_voltage.width = 2;
+    var_voltage.start_x = 980;
+    var_voltage.start_y = 200 - 40;
     var_voltage.details_c = 0;
     var_voltage.details_d = 0;
     var_voltage.details_e = 0;

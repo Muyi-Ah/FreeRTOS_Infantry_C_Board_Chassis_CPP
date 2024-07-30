@@ -12,11 +12,11 @@ void char_voltage_add_config(char* buf) {
     char_voltage.figure_tpye = kText;
     char_voltage.layer = 0;
     char_voltage.color = kGreen;
-    char_voltage.details_a = 30;
+    char_voltage.details_a = 25;
     char_voltage.details_b = 8;
-    char_voltage.width = 3;
+    char_voltage.width = 2;
     char_voltage.start_x = 780;
-    char_voltage.start_y = 150;
+    char_voltage.start_y = 200 - 40;
     strcpy(buf, "Voltage:");
 }
 

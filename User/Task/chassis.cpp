@@ -78,7 +78,12 @@ float target_rpm_204;
 float max_rpm = 2000.0f;
 float max_rpm_save;
 
+bool adjust_max_rpm_flag;
+
 bool Q_latch;
+bool Z_latch;
+bool X_latch;
+bool CTRL_latch;
 bool rotate_flag;
 
 void ChassisTask(void* argument) {
@@ -242,15 +247,13 @@ void ChassisTask(void* argument) {
 static bool RemoteTargetHandle() {
     bool is_move = false;
     if (dr16.remote_.ch2_ < 1024 - kRemoteDeadBand || dr16.remote_.ch2_ > 1024 + kRemoteDeadBand) {
-        // temp_vx = (float)((dr16.remote_.ch2_ - 1024) * kRemoteWheelsCoefficient);
-        temp_vx = (float)((dr16.remote_.ch2_ - 1024) / 660 * max_rpm);
+        temp_vx = (dr16.remote_.ch2_ - 1024) / 660.0f * max_rpm;
         is_move = true;
     } else {
         temp_vx = 0;
     }
     if (dr16.remote_.ch3_ < 1024 - kRemoteDeadBand || dr16.remote_.ch3_ > 1024 + kRemoteDeadBand) {
-        // temp_vy = (float)((dr16.remote_.ch3_ - 1024) * kRemoteWheelsCoefficient);
-        temp_vy = (float)((dr16.remote_.ch3_ - 1024) / 660 * max_rpm);
+        temp_vy = (dr16.remote_.ch3_ - 1024) / 660.0f * max_rpm;
         is_move = true;
     } else {
         temp_vy = 0;
@@ -286,7 +289,7 @@ void SubMode12Function() {
         enter_mode_12_timestamp = current_timestamp;
         vw = 0;  //车体停转
     } else if (current_timestamp - enter_mode_12_timestamp > 1000) {
-        vw = 7000;
+        vw = SmoothChange(vw, max_rpm, smooth_change_coefficient);
     }
     RemoteTargetHandle();                                          //摇杆值处理
     AllocateVelocityComponents(&temp_vx, &temp_vy, &vw, max_rpm);  //速度分量分配
@@ -300,7 +303,7 @@ void SubMode13Function() {
         enter_mode_13_timestamp = current_timestamp;
         vw = 0;  //车体停转
     } else if (current_timestamp - enter_mode_13_timestamp > 1000) {
-        vw = -7000;
+        vw = SmoothChange(vw, -max_rpm, smooth_change_coefficient);
     }
     RemoteTargetHandle();                                          //摇杆值处理
     AllocateVelocityComponents(&temp_vx, &temp_vy, &vw, max_rpm);  //速度分量分配
@@ -368,6 +371,7 @@ void SubMode33Function() {
         temp_vx = SmoothChange(temp_vx, 0, smooth_change_coefficient);
     }
 
+    //小陀螺切换
     if (dr16.KeyBoard_.key_.Q_key && Q_latch == false) {
         if (rotate_flag) {
             rotate_flag = false;
@@ -377,6 +381,32 @@ void SubMode33Function() {
         Q_latch = true;
     } else if (dr16.KeyBoard_.key_.Q_key == 0) {
         Q_latch = false;
+    }
+
+    //增加最大转速
+    if (dr16.KeyBoard_.key_.Z_key && Z_latch == false) {
+        max_rpm += 500;
+        adjust_max_rpm_flag = true;
+        Z_latch = true;
+    } else if (dr16.KeyBoard_.key_.Z_key == 0) {
+        Z_latch = false;
+    }
+
+    //降低最大转速
+    if (dr16.KeyBoard_.key_.X_key && X_latch == false) {
+        max_rpm -= 500;
+        adjust_max_rpm_flag = true;
+        X_latch = true;
+    } else if (dr16.KeyBoard_.key_.X_key == 0) {
+        X_latch = false;
+    }
+
+    //重新恢复默认转速
+    if (dr16.KeyBoard_.key_.CTRL_key && CTRL_latch == false) {
+        adjust_max_rpm_flag = false;
+        CTRL_latch = true;
+    } else if (dr16.KeyBoard_.key_.CTRL_key == 0) {
+        CTRL_latch = false;
     }
 
     //判断底盘小陀螺或跟随
@@ -401,7 +431,6 @@ void SubMode33Function() {
             }
             vw = -theta * kFollowCoefficient;
         }
-
         //  =================================================================
     }
 
@@ -432,6 +461,15 @@ static void ORE_Solve() {
 
         //重新启动接收
         HAL_UARTEx_ReceiveToIdle_DMA(kCommUart, comm_rx_buf, kCommRecvSize);
+    }
+
+    //解决串口ORE问题
+    if (__HAL_UART_GET_FLAG(kRefereeUart, UART_FLAG_ORE) != RESET) {
+
+        __HAL_UART_CLEAR_OREFLAG(kRefereeUart);  //清除ORE位
+
+        //重新启动接收
+        HAL_UARTEx_ReceiveToIdle_DMA(kRefereeUart, referee_rx_buf, kRefereeRecvSize);
     }
 }
 
@@ -481,7 +519,7 @@ void SubStateUpdate() {
                 state_machine.HandleEvent(kEventSwitchSubMode00);
             }
             break;
-            
+
         case 1:
             switch (dr16.remote_.s2_) {
                 case 1:

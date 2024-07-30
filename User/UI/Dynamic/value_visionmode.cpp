@@ -11,10 +11,10 @@ void var_visionmode_add_config() {
     var_visionmode.figure_tpye = kNumber;
     var_visionmode.layer = 1;
     var_visionmode.color = kCyan;
-    var_visionmode.details_a = 30;
-    var_visionmode.width = 3;
-    var_visionmode.start_x = 950;
-    var_visionmode.start_y = 220;
+    var_visionmode.details_a = 25;
+    var_visionmode.width = 2;
+    var_visionmode.start_x = 980;
+    var_visionmode.start_y = 100 - 40;
     var_visionmode.details_c = 0;
     var_visionmode.details_d = 0;
     var_visionmode.details_e = 0;

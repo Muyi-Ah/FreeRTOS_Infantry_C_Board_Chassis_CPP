@@ -43,10 +43,17 @@ static uint8_t VerifyAccumulationCheckSum(const uint8_t* buf, uint16_t lenght) {
 void Communicator::RecvUpdate(const uint8_t* buf) {
     if (VerifyAccumulationCheckSum(buf, kCommRecvSize)) {
         memcpy(&dr16, buf, sizeof(dr16));
-        memcpy(&comm.theta, buf + sizeof(dr16), sizeof(float));
-        memcpy(&comm.vision_is_use, buf + sizeof(dr16) + sizeof(float), sizeof(bool));
-        memcpy(&comm.vision_aim_type, buf + sizeof(dr16) + sizeof(float) + sizeof(bool),
-               sizeof(comm.vision_aim_type));
+        memcpy(&theta, buf + sizeof(dr16), sizeof(float));
+        memcpy(&vision_is_use, buf + sizeof(dr16) + sizeof(float), sizeof(bool));
+        memcpy(&vision_aim_type, buf + sizeof(dr16) + sizeof(float) + sizeof(bool),
+               sizeof(vision_aim_type));
+        memcpy(&friction_target_rpm,
+               buf + sizeof(dr16) + sizeof(float) + sizeof(bool) + sizeof(vision_aim_type),
+               sizeof(friction_target_rpm));
+        memcpy(&vision_is_aimed,
+               buf + sizeof(dr16) + sizeof(float) + sizeof(bool) + sizeof(vision_aim_type) +
+                   sizeof(friction_target_rpm),
+               sizeof(vision_is_aimed));
     }
 }
 
