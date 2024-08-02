@@ -34,6 +34,7 @@ void TimeStampClear();
 void SubStateUpdate();
 int SmoothChange(int current_value, int target_value, int step);
 void AllocateVelocityComponents(float* value1, float* value2, float* value3, float max_value);
+void ChassisFollow();
 
 /*  =========================== 变量定义 ===========================  */
 
@@ -59,7 +60,7 @@ uint32_t mode_31_timestamp;
 uint32_t mode_32_timestamp;
 uint32_t mode_33_timestamp;
 
-auto smooth_change_coefficient = 10;
+auto smooth_change_coefficient = 20;
 
 float theta;
 
@@ -83,8 +84,10 @@ bool adjust_max_rpm_flag;
 bool Q_latch;
 bool Z_latch;
 bool X_latch;
+bool C_latch;
 bool CTRL_latch;
 bool rotate_flag;
+bool follow_flag = true;
 
 void ChassisTask(void* argument) {
     for (;;) {
@@ -247,13 +250,13 @@ void ChassisTask(void* argument) {
 static bool RemoteTargetHandle() {
     bool is_move = false;
     if (dr16.remote_.ch2_ < 1024 - kRemoteDeadBand || dr16.remote_.ch2_ > 1024 + kRemoteDeadBand) {
-        temp_vx = (dr16.remote_.ch2_ - 1024) / 660.0f * max_rpm;
+        temp_vx = -((dr16.remote_.ch2_ - 1024) / 660.0f * max_rpm);
         is_move = true;
     } else {
         temp_vx = 0;
     }
     if (dr16.remote_.ch3_ < 1024 - kRemoteDeadBand || dr16.remote_.ch3_ > 1024 + kRemoteDeadBand) {
-        temp_vy = (dr16.remote_.ch3_ - 1024) / 660.0f * max_rpm;
+        temp_vy = -((dr16.remote_.ch3_ - 1024) / 660.0f * max_rpm);
         is_move = true;
     } else {
         temp_vy = 0;
@@ -289,8 +292,9 @@ void SubMode12Function() {
         enter_mode_12_timestamp = current_timestamp;
         vw = 0;  //车体停转
     } else if (current_timestamp - enter_mode_12_timestamp > 1000) {
-        vw = SmoothChange(vw, max_rpm, smooth_change_coefficient);
+        // vw = SmoothChange(vw, max_rpm, smooth_change_coefficient);
     }
+    vw = SmoothChange(vw, max_rpm, smooth_change_coefficient);
     RemoteTargetHandle();                                          //摇杆值处理
     AllocateVelocityComponents(&temp_vx, &temp_vy, &vw, max_rpm);  //速度分量分配
     RotateMatrixCompute(comm.theta);                               //旋转矩阵计算
@@ -303,8 +307,9 @@ void SubMode13Function() {
         enter_mode_13_timestamp = current_timestamp;
         vw = 0;  //车体停转
     } else if (current_timestamp - enter_mode_13_timestamp > 1000) {
-        vw = SmoothChange(vw, -max_rpm, smooth_change_coefficient);
+        // vw = SmoothChange(vw, -max_rpm, smooth_change_coefficient);
     }
+    vw = SmoothChange(vw, -max_rpm, smooth_change_coefficient);
     RemoteTargetHandle();                                          //摇杆值处理
     AllocateVelocityComponents(&temp_vx, &temp_vy, &vw, max_rpm);  //速度分量分配
     RotateMatrixCompute(comm.theta);                               //旋转矩阵计算
@@ -320,14 +325,15 @@ void SubMode21Function() {
 void SubMode22Function() {
     //若摇杆为有效值则进行移动和底盘跟随
     if (RemoteTargetHandle()) {
-        if (comm.theta > 180) {
-            theta = comm.theta - 360.0f;
-        } else {
-            theta = comm.theta;
-        }
-        vw = -theta * kFollowCoefficient;
-    } else {
-        vw = 0;
+        // if (comm.theta > 180) {
+    //         theta = comm.theta - 360.0f;
+    //     } else {
+    //         theta = comm.theta;
+    //     }
+    //     vw = -theta * kFollowCoefficient;
+    // } else {
+    //     vw = 0;
+    ChassisFollow();
     }
     AllocateVelocityComponents(&temp_vx, &temp_vy, &vw, max_rpm);  //速度分量分配
     RotateMatrixCompute(comm.theta);                               //旋转矩阵计算
@@ -337,12 +343,13 @@ void SubMode23Function() {
     RemoteTargetHandle();                                          //摇杆值处理
     AllocateVelocityComponents(&temp_vx, &temp_vy, &vw, max_rpm);  //速度分量分配
     RotateMatrixCompute(comm.theta);                               //旋转矩阵计算
-    if (comm.theta > 180) {
-        theta = comm.theta - 360.0f;
-    } else {
-        theta = comm.theta;
-    }
-    vw = -theta * kFollowCoefficient;
+    // if (comm.theta > 180) {
+    //     theta = comm.theta - 360.0f;
+    // } else {
+    //     theta = comm.theta;
+    // }
+    // vw = -theta * kFollowCoefficient;
+    ChassisFollow();
     WheelsRpmCompute();  //轮速计算
 }
 void SubMode31Function() {}
@@ -356,17 +363,17 @@ void SubMode33Function() {
 
     //按键平移
     if (dr16.KeyBoard_.key_.W_key) {
-        temp_vy = SmoothChange(temp_vy, max_rpm, smooth_change_coefficient);
-    } else if (dr16.KeyBoard_.key_.S_key) {
         temp_vy = SmoothChange(temp_vy, -max_rpm, smooth_change_coefficient);
+    } else if (dr16.KeyBoard_.key_.S_key) {
+        temp_vy = SmoothChange(temp_vy, max_rpm, smooth_change_coefficient);
     } else {
         temp_vy = SmoothChange(temp_vy, 0, smooth_change_coefficient);
     }
 
     if (dr16.KeyBoard_.key_.A_key) {
-        temp_vx = SmoothChange(temp_vx, -max_rpm, smooth_change_coefficient);
-    } else if (dr16.KeyBoard_.key_.D_key) {
         temp_vx = SmoothChange(temp_vx, max_rpm, smooth_change_coefficient);
+    } else if (dr16.KeyBoard_.key_.D_key) {
+        temp_vx = SmoothChange(temp_vx, -max_rpm, smooth_change_coefficient);
     } else {
         temp_vx = SmoothChange(temp_vx, 0, smooth_change_coefficient);
     }
@@ -409,29 +416,45 @@ void SubMode33Function() {
         CTRL_latch = false;
     }
 
+    if (dr16.KeyBoard_.key_.C_key && C_latch == false) {
+        if (follow_flag == false) {
+            follow_flag = true;
+        } else {
+            follow_flag = false;
+        }
+        C_latch = true;
+    } else if (dr16.KeyBoard_.key_.C_key == 0) {
+        C_latch = false;
+    }
+
     //判断底盘小陀螺或跟随
     if (rotate_flag) {
         vw = SmoothChange(vw, max_rpm, smooth_change_coefficient);
     }
     //底盘跟随
-    else {
-        //  ====================== adjust in 2024/7/26 ======================
-        if (comm.vision_is_use) {
-            if (comm.theta > 180) {
-                theta = comm.theta - 360.0f;
-            } else {
-                theta = comm.theta;
-            }
-            vw = -theta * kVisionFollowCoefficient;
-        } else {
-            if (comm.theta > 180) {
-                theta = comm.theta - 360.0f;
-            } else {
-                theta = comm.theta;
-            }
-            vw = -theta * kFollowCoefficient;
-        }
-        //  =================================================================
+    // else {
+    //     //  ====================== adjust in 2024/7/26 ======================
+    //     if (comm.vision_is_use) {
+    //         if (comm.theta > 180) {
+    //             theta = comm.theta - 360.0f;
+    //         } else {
+    //             theta = comm.theta;
+    //         }
+    //         vw = -theta * kVisionFollowCoefficient;
+    //     } else {
+    //         if (comm.theta > 180) {
+    //             theta = comm.theta - 360.0f;
+    //         } else {
+    //             theta = comm.theta;
+    //         }
+    //         vw = -theta * kFollowCoefficient;
+    //     }
+    //     //  =================================================================
+    // }
+    else if (follow_flag) {
+        ChassisFollow();
+    } else {
+        vw = 0;
     }
 
     //超速
@@ -439,7 +462,7 @@ void SubMode33Function() {
         if (max_rpm_save == 0) {
             max_rpm_save = max_rpm;
         } else {
-            max_rpm = 8000;
+            max_rpm = 9000;
         }
     } else {
         if (dr16.KeyBoard_.key_.SHIFT_key == 0 && max_rpm_save != 0) {
@@ -606,4 +629,24 @@ void AllocateVelocityComponents(float* value1, float* value2, float* value3, flo
         *value2 = value2_compenent_coefficient * max_value;
         *value3 = value3_compenent_coefficient * max_value;
     }
+}
+
+void ChassisFollow() {
+    //  ====================== 两头跟随 add in 2024/8/2 ====================
+    if (comm.theta > 0 && comm.theta <= 90) {
+        theta = comm.theta;
+    } else if (comm.theta > 90 && comm.theta <= 180) {
+        theta = (comm.theta - 180);
+    } else if (comm.theta > 180 && comm.theta <= 270) {
+        theta = (comm.theta - 180);
+    } else {
+        theta = comm.theta - 360.0f;
+    }
+
+    if (comm.vision_is_use) {
+        vw = -theta * kVisionFollowCoefficient;
+    } else {
+        vw = -theta * kFollowCoefficient;
+    }
+    //  ===================================================================
 }

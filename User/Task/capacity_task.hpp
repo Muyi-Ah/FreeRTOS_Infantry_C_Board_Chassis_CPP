@@ -4,7 +4,8 @@
 extern "C" {
 #endif
 
-void CapacityTask(void* argument);
+void CapacityAskTask(void* argument);
+void CapacityChargeTask(void* argument);
 
 #ifdef __cplusplus
 }

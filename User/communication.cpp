@@ -47,12 +47,12 @@ void Communicator::RecvUpdate(const uint8_t* buf) {
         memcpy(&vision_is_use, buf + sizeof(dr16) + sizeof(float), sizeof(bool));
         memcpy(&vision_aim_type, buf + sizeof(dr16) + sizeof(float) + sizeof(bool),
                sizeof(vision_aim_type));
-        memcpy(&friction_target_rpm,
+        memcpy(&friction_is_enable,
                buf + sizeof(dr16) + sizeof(float) + sizeof(bool) + sizeof(vision_aim_type),
-               sizeof(friction_target_rpm));
+               sizeof(friction_is_enable));
         memcpy(&vision_is_aimed,
                buf + sizeof(dr16) + sizeof(float) + sizeof(bool) + sizeof(vision_aim_type) +
-                   sizeof(friction_target_rpm),
+                   sizeof(friction_is_enable),
                sizeof(vision_is_aimed));
     }
 }

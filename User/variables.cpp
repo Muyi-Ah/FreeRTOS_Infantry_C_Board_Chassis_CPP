@@ -38,6 +38,7 @@ UIcharacterFigure const_character_level(103, 0x167);
 UIcharacterFigure const_character_powerlimit(103, 0x167);
 UIcharacterFigure const_character_visionmode(103, 0x167);
 UIcharacterFigure const_character_friction;
+UIcharacterFigure character_chassis_mode;
 UIFiveFigure var(103, 0x167);
 UIOneFigure oneline;
 UITwoFigure chassis_angle_figure;

@@ -9,7 +9,7 @@ class Capacity {
     bool is_reply_ = false;
 
     void EnableOutput();
-    void SetMaxChargePower();
+    void SetMaxChargePower(uint16_t more_power);
     void AskVoltage();
     void AskInputPower();
 

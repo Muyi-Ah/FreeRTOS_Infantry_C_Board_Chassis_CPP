@@ -105,10 +105,10 @@ void MainCallBack() {
 
     DjiMotorSend();  //������ݷ���?
 
-    //uint8_t send_str2[(vofa_cnt + 1) * 4] = {0};
-    //*((float*)&send_str2[0 * 4]) = (float)ch110.z_velocity_;
-    //*((float*)&send_str2[1 * 4]) = (float)0;
-    //*((uint32_t*)&send_str2[sizeof(float) * (vofa_cnt)]) = 0x7f800000;
-    ////��ʼ��������
-    //HAL_UART_Transmit_DMA(&huart6, send_str2, sizeof(float) * (vofa_cnt + 1));
+    // uint8_t send_str2[(vofa_cnt + 1) * 4] = {0};
+    // *((float*)&send_str2[0 * 4]) = (float)motor_201.actual_rpm_;
+    // *((float*)&send_str2[1 * 4]) = (float)0;
+    // *((uint32_t*)&send_str2[sizeof(float) * (vofa_cnt)]) = 0x7f800000;
+    // //��ʼ��������
+    // HAL_UART_Transmit_DMA(&huart6, send_str2, sizeof(float) * (vofa_cnt + 1));
 }

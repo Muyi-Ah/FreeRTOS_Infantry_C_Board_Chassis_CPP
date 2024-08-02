@@ -58,6 +58,4 @@ class Referee {
     hurt_data_t hurt_data;
 
     void FrameProcessing(uint8_t* buf);
-
-   private:
 };

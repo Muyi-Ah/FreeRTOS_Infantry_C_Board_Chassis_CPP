@@ -7,6 +7,7 @@
 #include "char_voltage.hpp"
 #include "chassis.hpp"
 #include "chassis_angle_figure.hpp"
+#include "chassis_follow_mode.hpp"
 #include "cmsis_os2.h"
 #include "value_level.hpp"
 #include "value_maxrpm.hpp"
@@ -33,6 +34,8 @@ bool ui_test_flag;  //测试用
 bool ctrl_latch;
 bool dynamic_flag;
 bool delete_flag;
+extern bool follow_flag;
+
 void UITask(void* argument) {
     for (;;) {
         //重置UI
@@ -108,6 +111,14 @@ void UITask(void* argument) {
 
             osDelay(35);
 
+            //CHASSIS_MODE字符
+            char_chassis_follow_add_config(
+                (char*)&character_chassis_mode.robot_interaction_data.character);
+            character_chassis_mode.config(&char_chassis_follow);
+            character_chassis_mode.Send();
+
+            osDelay(35);
+
             var_voltage_add_config();     //Voltage数值
             var_maxrpm_add_config();      //MaxRpm数值
             var_level_add_config();       //Level数值
@@ -163,7 +174,7 @@ void UITask(void* argument) {
             osDelay(kDynamicPeriod);
 
             //摩擦轮开关表示
-            if (comm.friction_target_rpm == 0) {
+            if (comm.friction_is_enable == 0) {
                 char_friction_update_OFF_config(
                     (char*)&const_character_friction.robot_interaction_data.character);
                 const_character_friction.config(&char_friction);
@@ -179,6 +190,7 @@ void UITask(void* argument) {
                 osDelay(kDynamicPeriod);
             }
 
+            //视觉锁定状态表示
             if (comm.vision_is_aimed) {
                 vision_aimed_figure_update_is_aimed_config();
                 vision_aimed.Config(&vision_aimed_figure);
@@ -189,6 +201,23 @@ void UITask(void* argument) {
                 vision_aimed_figure_update_not_aimed_config();
                 vision_aimed.Config(&vision_aimed_figure);
                 vision_aimed.Send();
+
+                osDelay(kDynamicPeriod);
+            }
+
+            //底盘跟随模式表示
+            if (follow_flag) {
+                char_chassis_update_Follow_config(
+                    (char*)&character_chassis_mode.robot_interaction_data.character);
+                character_chassis_mode.config(&char_chassis_follow);
+                character_chassis_mode.Send();
+
+                osDelay(kDynamicPeriod);
+            } else {
+                char_chassis_update_Normal_config(
+                    (char*)&character_chassis_mode.robot_interaction_data.character);
+                character_chassis_mode.config(&char_chassis_follow);
+                character_chassis_mode.Send();
 
                 osDelay(kDynamicPeriod);
             }
@@ -218,4 +247,5 @@ static void UI_ID_Update() {
     const_character_friction.SetID(sender_id, receiver_id);
     chassis_angle_figure.SetID(sender_id, receiver_id);
     vision_aimed.SetID(sender_id, receiver_id);
+    character_chassis_mode.SetID(sender_id, receiver_id);
 }

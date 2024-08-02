@@ -42,6 +42,7 @@ extern UIcharacterFigure const_character_level;
 extern UIcharacterFigure const_character_powerlimit;
 extern UIcharacterFigure const_character_visionmode;
 extern UIcharacterFigure const_character_friction;
+extern UIcharacterFigure character_chassis_mode;
 extern UIFiveFigure var;
 extern UIOneFigure oneline;
 extern UIOneFigure twoline;
