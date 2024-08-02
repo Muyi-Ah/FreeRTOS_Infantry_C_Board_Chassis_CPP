@@ -1,7 +1,9 @@
 #include "capacity_task.hpp"
+#include "FreeRTOS.h"
 #include "cmsis_os2.h"
 #include "variables.hpp"
-#include "FreeRTOS.h"
+
+uint16_t more_power;
 
 void CapacityAskTask(void* argument) {
     for (;;) {
@@ -12,7 +14,7 @@ void CapacityAskTask(void* argument) {
         osDelay(35);
         capacity.AskInputPower();
         osDelay(35);
-        capacity.SetMaxChargePower(0);
+        capacity.SetMaxChargePower(more_power);
         osDelay(35);
         //  ========================================================================
 

@@ -48,3 +48,4 @@ extern UIOneFigure oneline;
 extern UIOneFigure twoline;
 extern UITwoFigure chassis_angle_figure;
 extern UIOneFigure vision_aimed;
+extern UISevenFigure aimed_line;

@@ -1,4 +1,5 @@
 #include "ui_task.hpp"
+#include "aimed_line.hpp"
 #include "char_friction.hpp"
 #include "char_level.hpp"
 #include "char_maxrpm.hpp"
@@ -60,8 +61,11 @@ void UITask(void* argument) {
 
             delete_flag = false;
 
-            // oneline.Config(&interaction_figure_onelin1);
-            // oneline.Send();
+            const_aimed_line_add_config();
+            aimed_line.Config(&const_aimed_line1, &const_aimed_line2, &const_aimed_line3,
+                              &const_aimed_line4, &const_aimed_line5, &const_aimed_line6,
+                              &const_aimed_line7);
+            aimed_line.Send();
 
             osDelay(35);
 
@@ -248,4 +252,5 @@ static void UI_ID_Update() {
     chassis_angle_figure.SetID(sender_id, receiver_id);
     vision_aimed.SetID(sender_id, receiver_id);
     character_chassis_mode.SetID(sender_id, receiver_id);
+    aimed_line.SetID(sender_id, receiver_id);
 }

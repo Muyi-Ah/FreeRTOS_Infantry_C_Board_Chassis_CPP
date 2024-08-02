@@ -43,3 +43,4 @@ UIFiveFigure var(103, 0x167);
 UIOneFigure oneline;
 UITwoFigure chassis_angle_figure;
 UIOneFigure vision_aimed;
+UISevenFigure aimed_line;

@@ -3,6 +3,8 @@
 #include "cmsis_os2.h"
 #include "variables.hpp"
 
+extern uint16_t more_power;
+
 void capacity_power_detection();
 
 void RefereeDetectTask(void* argument) {
@@ -13,6 +15,12 @@ void RefereeDetectTask(void* argument) {
 }
 
 void capacity_power_detection() {
+    if (referee.power_heat_data.buffer_energy < 20) {
+        more_power = -200;
+    } else {
+        more_power = 0;
+    }
+
     switch (referee.robot_status.chassis_power_limit) {
 
         case 45:

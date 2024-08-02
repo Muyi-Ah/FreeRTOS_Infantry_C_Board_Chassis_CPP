@@ -734,6 +734,11 @@
               <FileType>8</FileType>
               <FilePath>..\User\UI\Static\char_friction.cpp</FilePath>
             </File>
+            <File>
+              <FileName>aimed_line.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\UI\Static\aimed_line.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
