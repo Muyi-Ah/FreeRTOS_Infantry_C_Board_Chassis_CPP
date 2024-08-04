@@ -33,6 +33,13 @@ void char_chassis_update_Follow_config(char* buf) {
     strcpy(buf, "chassis:follow");
 }
 
+void char_chassis_update_Rotate_config(char* buf) {
+    char_chassis_follow.operate_tpye = kUpdateOperate;
+    char_chassis_follow.color = kOrange;
+    char_chassis_follow.details_b = 14;
+    strcpy(buf, "chassis:rotate");
+}
+
 void char_chassis_delete_config() {
     char_chassis_follow.operate_tpye = kDeleteOperate;
 }

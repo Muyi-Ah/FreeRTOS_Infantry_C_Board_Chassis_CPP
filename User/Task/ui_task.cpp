@@ -36,6 +36,7 @@ bool ctrl_latch;
 bool dynamic_flag;
 bool delete_flag;
 extern bool follow_flag;
+extern bool rotate_flag;
 
 void UITask(void* argument) {
     for (;;) {
@@ -210,7 +211,14 @@ void UITask(void* argument) {
             }
 
             //底盘跟随模式表示
-            if (follow_flag) {
+            if (rotate_flag) {
+                char_chassis_update_Rotate_config(
+                    (char*)&character_chassis_mode.robot_interaction_data.character);
+                character_chassis_mode.config(&char_chassis_follow);
+                character_chassis_mode.Send();
+
+                osDelay(kDynamicPeriod);
+            } else if (follow_flag) {
                 char_chassis_update_Follow_config(
                     (char*)&character_chassis_mode.robot_interaction_data.character);
                 character_chassis_mode.config(&char_chassis_follow);

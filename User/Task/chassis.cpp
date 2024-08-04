@@ -1,10 +1,13 @@
 #include "chassis.hpp"
+#include "stdint.h"  //stdint.h需要在cmsis_armclang.h前面才能过编译
+#include <cmsis_armclang.h>
 #include <cstdint>
 #include "arm_math.h"
 #include "clamp.hpp"
 #include "cmsis_os2.h"
 #include "simple_math.hpp"
 #include "state_machine.hpp"
+#include "stdint.h"
 #include "uart.hpp"
 #include "variables.hpp"
 
@@ -35,6 +38,7 @@ void SubStateUpdate();
 int SmoothChange(int current_value, int target_value, int step);
 void AllocateVelocityComponents(float* value1, float* value2, float* value3, float max_value);
 void ChassisFollow();
+void dead_detect();
 
 /*  =========================== 变量定义 ===========================  */
 
@@ -88,6 +92,8 @@ bool C_latch;
 bool CTRL_latch;
 bool rotate_flag;
 bool follow_flag = true;
+
+bool dead_latch;
 
 void ChassisTask(void* argument) {
     for (;;) {
@@ -242,6 +248,7 @@ void ChassisTask(void* argument) {
         target_rpm_204 = clamp(target_rpm_204, -max_rpm, max_rpm);
 
         TimeStampClear();  //时间戳清除
+        dead_detect();     //死亡关小陀螺和跟随
 
         osDelay(1);  //延时
     }
@@ -326,14 +333,14 @@ void SubMode22Function() {
     //若摇杆为有效值则进行移动和底盘跟随
     if (RemoteTargetHandle()) {
         // if (comm.theta > 180) {
-    //         theta = comm.theta - 360.0f;
-    //     } else {
-    //         theta = comm.theta;
-    //     }
-    //     vw = -theta * kFollowCoefficient;
-    // } else {
-    //     vw = 0;
-    ChassisFollow();
+        //         theta = comm.theta - 360.0f;
+        //     } else {
+        //         theta = comm.theta;
+        //     }
+        //     vw = -theta * kFollowCoefficient;
+        // } else {
+        //     vw = 0;
+        ChassisFollow();
     }
     AllocateVelocityComponents(&temp_vx, &temp_vy, &vw, max_rpm);  //速度分量分配
     RotateMatrixCompute(comm.theta);                               //旋转矩阵计算
@@ -469,6 +476,19 @@ void SubMode33Function() {
             max_rpm = max_rpm_save;
             max_rpm_save = 0;
         }
+    }
+
+    if (dr16.KeyBoard_.key_.R_key) {
+        //获取系统时间戳，单位为ms
+        auto current_timestamp = HAL_GetTick();
+        if (enter_mode_33_timestamp == 0) {  //刚进入该模式
+            enter_mode_33_timestamp = current_timestamp;
+        } else if (current_timestamp - enter_mode_33_timestamp > 900) {
+            __set_FAULTMASK(1);
+            NVIC_SystemReset();
+        }
+    } else if (dr16.KeyBoard_.key_.R_key == 0) {
+        enter_mode_33_timestamp = 0;
     }
 
     AllocateVelocityComponents(&temp_vx, &temp_vy, &vw, max_rpm);  //速度分量分配
@@ -633,7 +653,7 @@ void AllocateVelocityComponents(float* value1, float* value2, float* value3, flo
 
 void ChassisFollow() {
     //  ====================== 两头跟随 add in 2024/8/2 ====================
-    if (comm.theta > 0 && comm.theta <= 90) {
+    if (comm.theta >= 0 && comm.theta <= 90) {
         theta = comm.theta;
     } else if (comm.theta > 90 && comm.theta <= 180) {
         theta = (comm.theta - 180);
@@ -649,4 +669,14 @@ void ChassisFollow() {
         vw = -theta * kFollowCoefficient;
     }
     //  ===================================================================
+}
+
+void dead_detect() {
+    if (referee.robot_status.current_HP == 0 && dead_latch == false) {
+        rotate_flag = false;
+        follow_flag = false;
+        dead_latch = true;
+    } else if (referee.robot_status.current_HP != 0) {
+        dead_latch = false;
+    }
 }
