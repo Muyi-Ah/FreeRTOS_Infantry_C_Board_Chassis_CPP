@@ -20,11 +20,7 @@
 
 static void UI_ID_Update();
 
-interaction_figure_t interaction_figure_oneline = {"on", 1, 0, 2, 6, 0, 0, 5, 0, 512, 0, 1920, 512};
-interaction_figure_t interaction_figure_onelin1 = {"tw", 1, 0, 3, 6, 0, 0, 5, 0, 280, 0, 1920, 280};
-interaction_figure_t interaction_figure_onelin2 = {"th", 1, 0, 3, 6, 0, 0, 5, 0, 700, 0, 1920, 700};
-
-constexpr uint32_t kDynamicPeriod = 35;
+constexpr uint32_t kDynamicPeriod = 35;  //ui发送间隔
 
 /**
  * 别忘了在最下面有个函数是ID更新的，别忘记更新ID了，不然UI发不到的
@@ -32,9 +28,9 @@ constexpr uint32_t kDynamicPeriod = 35;
  */
 
 bool ui_test_flag;  //测试用
-bool ctrl_latch;
-bool dynamic_flag;
-bool delete_flag;
+bool ctrl_latch;    //CTRL键锁存
+bool dynamic_flag;  //动态更新标志位
+bool delete_flag;   //删除标志位
 extern bool follow_flag;
 extern bool rotate_flag;
 

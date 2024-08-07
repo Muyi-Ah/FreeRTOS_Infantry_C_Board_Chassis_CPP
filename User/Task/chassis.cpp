@@ -1,5 +1,4 @@
 #include "chassis.hpp"
-#include "stdint.h"  //stdint.h需要在cmsis_armclang.h前面才能过编译
 #include <cmsis_armclang.h>
 #include <cstdint>
 #include "arm_math.h"
@@ -7,17 +6,16 @@
 #include "cmsis_os2.h"
 #include "simple_math.hpp"
 #include "state_machine.hpp"
-#include "stdint.h"
+#include "stdint.h"  //stdint.h需要在cmsis_armclang.h前面才能过编译
 #include "uart.hpp"
 #include "variables.hpp"
 
 /*  =========================== 常量定义 ===========================  */
 
-constexpr auto kRemoteDeadBand = 10;  //遥控器死区
-constexpr auto kRemoteWheelsCoefficient = 12.0f;
-constexpr auto kFollowCoefficient = 100.0f;
-constexpr auto kVisionFollowCoefficient = 25.0f;
-constexpr auto kReverseOperateCoeficient = 2;
+constexpr auto kRemoteDeadBand = 10;              //遥控器死区
+constexpr auto kFollowCoefficient = 100.0f;       //底盘跟随系数
+constexpr auto kVisionFollowCoefficient = 25.0f;  //视觉模式下的底盘跟随系数
+constexpr auto kReverseOperateCoeficient = 2;     //按键反按时缓启动的变化倍数
 
 /*  =========================== 函数声明 ===========================  */
 
@@ -64,37 +62,45 @@ uint32_t mode_31_timestamp;
 uint32_t mode_32_timestamp;
 uint32_t mode_33_timestamp;
 
-auto smooth_change_coefficient = 20;
+constexpr auto smooth_change_coefficient = 20;  //平滑函数步进值
 
-float theta;
+float theta;  //底盘跟随使用的夹角
 
+//速度分量
 float vx;
 float vy;
 float vw;
 
+//速度分量计算临时值
 float temp_vx;
 float temp_vy;
 
+//电机目标速度值
 float target_rpm_201;
 float target_rpm_202;
 float target_rpm_203;
 float target_rpm_204;
 
+//电机最大转速
 float max_rpm = 2000.0f;
 float max_rpm_save;
 
-bool adjust_max_rpm_flag;
+bool adjust_max_rpm_flag;  //最大转速调整标志位
 
+//按键锁存
 bool Q_latch;
 bool Z_latch;
 bool X_latch;
 bool C_latch;
 bool CTRL_latch;
-bool rotate_flag;
-bool follow_flag = true;
 
-bool dead_latch;
+bool rotate_flag;         //小陀螺标志位
+bool follow_flag = true;  //底盘跟随标志位
 
+bool dead_latch;  //死亡状态锁存
+
+/// @brief 底盘任务
+/// @param argument
 void ChassisTask(void* argument) {
     for (;;) {
 
@@ -152,7 +158,7 @@ void ChassisTask(void* argument) {
                         motor_204.is_enable_ = true;
                         break;
 
-                    case kSubMode21:
+                    case kSubMode21:  //底盘不跟随模式
                         SubMode21Function();
                         motor_201.is_enable_ = true;
                         motor_202.is_enable_ = true;
@@ -160,7 +166,7 @@ void ChassisTask(void* argument) {
                         motor_204.is_enable_ = true;
                         break;
 
-                    case kSubMode22:
+                    case kSubMode22:  //底盘移动时跟随模式
                         SubMode22Function();
                         motor_201.is_enable_ = true;
                         motor_202.is_enable_ = true;
@@ -168,7 +174,7 @@ void ChassisTask(void* argument) {
                         motor_204.is_enable_ = true;
                         break;
 
-                    case kSubMode23:  //转场模式
+                    case kSubMode23:  //底盘跟随模式
                         SubMode23Function();
                         motor_201.is_enable_ = true;
                         motor_202.is_enable_ = true;
@@ -254,6 +260,8 @@ void ChassisTask(void* argument) {
     }
 }
 
+/// @brief 遥控器目标值处理
+/// @return 是否移动
 static bool RemoteTargetHandle() {
     bool is_move = false;
     if (dr16.remote_.ch2_ < 1024 - kRemoteDeadBand || dr16.remote_.ch2_ > 1024 + kRemoteDeadBand) {
@@ -271,12 +279,15 @@ static bool RemoteTargetHandle() {
     return is_move;
 }
 
+/// @brief 旋转矩阵计算
+/// @param theta 云台底盘夹角
 static void RotateMatrixCompute(float theta) {
     auto radian = deg2rad(theta);
     vx = (temp_vx * arm_cos_f32(radian)) + (-temp_vy * arm_sin_f32(radian));
     vy = (temp_vx * arm_sin_f32(radian)) + (temp_vy * arm_cos_f32(radian));
 }
 
+/// @brief 轮速计算
 static void WheelsRpmCompute() {
     target_rpm_201 = -vx - vy + vw;
     target_rpm_202 = vx - vy + vw;
@@ -496,6 +507,7 @@ void SubMode33Function() {
     WheelsRpmCompute();                                            //轮速计算
 }
 
+/// @brief 串口ORE清除
 static void ORE_Solve() {
     //解决串口ORE问题
     if (__HAL_UART_GET_FLAG(kCommUart, UART_FLAG_ORE) != RESET) {
@@ -516,6 +528,7 @@ static void ORE_Solve() {
     }
 }
 
+/// @brief 子模式时间戳清除
 void TimeStampClear() {
     if (state_machine.sub_state_ != kSubMode11) {
         enter_mode_11_timestamp = 0;
@@ -555,6 +568,7 @@ void TimeStampClear() {
     }
 }
 
+/// @brief 子模式更新
 void SubStateUpdate() {
     switch (dr16.remote_.s1_) {
         case 0:
@@ -617,6 +631,11 @@ void SubStateUpdate() {
     }
 }
 
+/// @brief 平滑函数
+/// @param current_value 当前值
+/// @param target_value 目标值
+/// @param step 步进值
+/// @return 计算后的值
 int SmoothChange(int current_value, int target_value, int step) {
     if (current_value * target_value < 0) {
         if (current_value + step < target_value) {
@@ -639,6 +658,11 @@ int SmoothChange(int current_value, int target_value, int step) {
     return current_value;
 }
 
+/// @brief 速度分量分配
+/// @param value1 值1
+/// @param value2 值2
+/// @param value3 值3
+/// @param max_value 最大值
 void AllocateVelocityComponents(float* value1, float* value2, float* value3, float max_value) {
     float sum = *value1 + *value2 + *value3;
     if (sum > max_value) {
@@ -651,6 +675,7 @@ void AllocateVelocityComponents(float* value1, float* value2, float* value3, flo
     }
 }
 
+/// @brief 底盘跟随
 void ChassisFollow() {
     //  ====================== 两头跟随 add in 2024/8/2 ====================
     if (comm.theta >= 0 && comm.theta <= 90) {
@@ -671,6 +696,7 @@ void ChassisFollow() {
     //  ===================================================================
 }
 
+/// @brief 死亡检测
 void dead_detect() {
     if (referee.robot_status.current_HP == 0 && dead_latch == false) {
         rotate_flag = false;

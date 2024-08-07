@@ -7,6 +7,8 @@ extern uint16_t more_power;
 
 void capacity_power_detection();
 
+/// @brief 功率保护任务
+/// @param argument 
 void RefereeDetectTask(void* argument) {
     for (;;) {
         capacity_power_detection();  //底盘功率检测
@@ -14,6 +16,7 @@ void RefereeDetectTask(void* argument) {
     }
 }
 
+/// @brief 充电功率选择
 void capacity_power_detection() {
     if (referee.power_heat_data.buffer_energy < 20) {
         more_power = -200;

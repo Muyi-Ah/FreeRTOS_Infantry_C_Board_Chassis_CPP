@@ -1,3 +1,14 @@
+/**
+ * @file capacity_task.cpp
+ * @author XMX
+ * @brief 电容查询及发送任务
+ * @version 1.0
+ * @date 2024-08-05
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #include "capacity_task.hpp"
 #include "FreeRTOS.h"
 #include "cmsis_os2.h"
@@ -5,6 +16,11 @@
 
 uint16_t more_power;
 
+/**
+ * @brief 电容查询及功率设置
+ * 
+ * @param argument 
+ */
 void CapacityAskTask(void* argument) {
     for (;;) {
         //  ============================= 安合电容 =================================
@@ -25,6 +41,11 @@ void CapacityAskTask(void* argument) {
     }
 }
 
+/**
+ * @brief 电容充电功率发送任务（未使用）
+ * 
+ * @param argument 
+ */
 void CapacityChargeTask(void* argument) {
     for (;;) {
         // //buffer_energy最大为60
