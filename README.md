@@ -2,6 +2,9 @@
  Base on FreeRTOS
  For RMUC 2024 Wild Card Competition
 
+ #### Encode
+ 本工程内文件使用GB2312编码格式兼容Keil中文显示
+
  #### 代码文件内特殊标注
 
 - **@developing**为待开发
