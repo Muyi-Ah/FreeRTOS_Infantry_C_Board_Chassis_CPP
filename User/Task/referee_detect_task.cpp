@@ -1,3 +1,13 @@
+/**
+ * @file referee_detect_task.cpp
+ * @author XMX
+ * @brief 与裁判系统数据相关的检测任务
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "referee_detect_task.hpp"
 #include "chassis.hpp"
 #include "cmsis_os2.h"

@@ -1,3 +1,13 @@
+/**
+ * @file ui_task.cpp
+ * @author XMX
+ * @brief 客户端UI绘制任务
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "ui_task.hpp"
 #include "aimed_line.hpp"
 #include "char_friction.hpp"
@@ -34,6 +44,8 @@ bool delete_flag;   //删除标志位
 extern bool follow_flag;
 extern bool rotate_flag;
 
+/// @brief UI任务
+/// @param argument 
 void UITask(void* argument) {
     for (;;) {
         //重置UI
@@ -131,13 +143,14 @@ void UITask(void* argument) {
 
             osDelay(35);
 
-            chassis_angle_figure_add_config();  //底盘方位指示
-
+            //底盘方位指示
+            chassis_angle_figure_add_config();
             chassis_angle_figure.Config(&chassis_angle_figure1, &chassis_angle_figure2);
             chassis_angle_figure.Send();
 
             osDelay(35);
 
+            //视觉瞄准框
             vision_aimed_figure_add_config();
             vision_aimed.Config(&vision_aimed_figure);
             vision_aimed.Send();
@@ -233,14 +246,19 @@ void UITask(void* argument) {
     }
 }
 
+/// @brief 机器人ID获取
+/// @return 
 static uint16_t GetRobotID() {
     return referee.robot_status.robot_id;
 }
 
+/// @brief 机器人对应客户端ID获取
+/// @return 
 static uint16_t GetClientID() {
     return referee.robot_status.robot_id + 0x100;
 }
 
+/// @brief UI发送/接收ID更新
 static void UI_ID_Update() {
     uint16_t sender_id = GetRobotID();
     uint16_t receiver_id = GetClientID();

@@ -1,3 +1,13 @@
+/**
+ * @file chassis_angle_figure.cpp
+ * @author XMX
+ * @brief 底盘云台方位指示UI
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "chassis_angle_figure.hpp"
 #include <cstring>
 #include "ui.hpp"
@@ -11,6 +21,7 @@ int32_t start_angle2;
 int32_t end_angle1;
 int32_t end_angle2;
 
+/// @brief 底盘指示UI添加
 void chassis_angle_figure_add_config() {
     chassis_angle_figure1.figure_name[0] = 2;
     chassis_angle_figure1.figure_name[1] = 0;
@@ -48,7 +59,7 @@ void chassis_angle_figure_add_config() {
 }
 
 #define MOD360(x) ((x) > 360 ? ((x) % 360) : (x))
-
+/// @brief 底盘指示UI更新
 void chassis_angle_figure_update_config() {
     start_angle1 = 45 + (360 - (uint16_t)comm.theta);
     end_angle1 = 315 + (360 - (uint16_t)comm.theta);
@@ -69,6 +80,7 @@ void chassis_angle_figure_update_config() {
     chassis_angle_figure2.operate_tpye = kUpdateOperate;
 }
 
+/// @brief 底盘指示UI删除
 void chassis_angle_figure_delete_config() {
     chassis_angle_figure1.operate_tpye = kDeleteOperate;
     chassis_angle_figure2.operate_tpye = kDeleteOperate;

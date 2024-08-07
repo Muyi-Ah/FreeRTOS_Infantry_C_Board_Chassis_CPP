@@ -1,6 +1,18 @@
+/**
+ * @file state_machine.cpp
+ * @author XMX
+ * @brief 状态机类方法
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "state_machine.hpp"
 #include "error_handle.hpp"
 
+/// @brief 状态切换
+/// @param  切换事件
 void StateMachine::HandleEvent(enum Event event) {
     switch (main_state_) {
 

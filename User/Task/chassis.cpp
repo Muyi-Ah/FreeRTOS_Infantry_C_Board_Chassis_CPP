@@ -1,4 +1,15 @@
+/**
+ * @file chassis.cpp
+ * @author XMX
+ * @brief 底盘运行任务
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "chassis.hpp"
+#include "stdint.h"  //stdint.h需要在cmsis_armclang.h前面才能过编译
 #include <cmsis_armclang.h>
 #include <cstdint>
 #include "arm_math.h"
@@ -6,7 +17,6 @@
 #include "cmsis_os2.h"
 #include "simple_math.hpp"
 #include "state_machine.hpp"
-#include "stdint.h"  //stdint.h需要在cmsis_armclang.h前面才能过编译
 #include "uart.hpp"
 #include "variables.hpp"
 
@@ -295,6 +305,7 @@ static void WheelsRpmCompute() {
     target_rpm_204 = -vx + vy + vw;
 }
 
+/// @brief 子模式函数
 void HaltFunction() {}
 void SubMode00Function() {
     target_rpm_201 = 0;

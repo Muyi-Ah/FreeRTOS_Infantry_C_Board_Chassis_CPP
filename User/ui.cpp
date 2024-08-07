@@ -1,3 +1,13 @@
+/**
+ * @file ui.cpp
+ * @author XMX
+ * @brief UI¿‡∑Ω∑®
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "ui.hpp"
 #include <cstring>
 #include "crc.hpp"

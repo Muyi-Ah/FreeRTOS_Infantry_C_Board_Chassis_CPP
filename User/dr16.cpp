@@ -1,5 +1,17 @@
+/**
+ * @file dr16.cpp
+ * @author XMX
+ * @brief DR16类方法
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "dr16.hpp"
 
+/// @brief 接收机数据更新
+/// @param buf 数据数组
 void DR16::DataUpdate(const uint8_t* buf) {
     remote_.ch0_ = (buf[0] | buf[1] << 8) & 0x07FF;
     remote_.ch1_ = (buf[1] >> 3 | buf[2] << 5) & 0x07FF;

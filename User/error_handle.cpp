@@ -1,11 +1,18 @@
+/**
+ * @file error_handle.cpp
+ * @author XMX
+ * @brief 错误检测类方法
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "error_handle.hpp"
 #include <cstdint>
 #include "variables.hpp"
 
-/**
- * @brief 错误检测
- * 
- */
+/// @brief 错误检测
 void ErrorHandle::Check() {
     //电机检测
     for (uint8_t i = 0; i < kMotorCount; i++) {
@@ -34,10 +41,7 @@ void ErrorHandle::Check() {
     }
 }
 
-/**
- * @brief 错误处理
- * 
- */
+/// @brief 错误处理
 void ErrorHandle::Handle() {
     for (uint8_t i = 0; i < kMotorCount; i++) {
 

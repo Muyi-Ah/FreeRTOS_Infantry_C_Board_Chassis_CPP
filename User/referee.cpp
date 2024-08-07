@@ -1,7 +1,19 @@
+/**
+ * @file referee.cpp
+ * @author XMX
+ * @brief 裁判系统类方法
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "referee.hpp"
 #include <cstring>
 #include "crc.hpp"
 
+/// @brief 裁判系统数据更新
+/// @param buf 数据数组
 void Referee::FrameProcessing(uint8_t* buf) {
     for (uint16_t i = 0; i < recv_size; i++) {
 

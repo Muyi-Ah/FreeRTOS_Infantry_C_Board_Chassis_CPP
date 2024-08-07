@@ -1,3 +1,13 @@
+/**
+ * @file variables.cpp
+ * @author XMX
+ * @brief 全局变量创建
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "variables.hpp"
 
 DjiMotor motor_201(0x201);  //驱动轮
@@ -40,7 +50,7 @@ UIcharacterFigure const_character_visionmode(103, 0x167);
 UIcharacterFigure const_character_friction;
 UIcharacterFigure character_chassis_mode;
 UIFiveFigure var(103, 0x167);
-UIOneFigure oneline;
+UIOneFigure oneline;  //仅作为测试，未使用
 UITwoFigure chassis_angle_figure;
 UIOneFigure vision_aimed;
 UISevenFigure aimed_line;

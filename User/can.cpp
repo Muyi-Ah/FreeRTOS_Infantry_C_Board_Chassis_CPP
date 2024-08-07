@@ -1,14 +1,19 @@
+/**
+ * @file can.cpp
+ * @author XMX
+ * @brief CAN外设初始化
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "can.hpp"
 #include "call_back.hpp"
 #include "error_handle.hpp"
 
-//constexpr CAN_HandleTypeDef* kMotorCan = &hcan1;
-//constexpr CAN_HandleTypeDef* kCapacityCan = &hcan2;
-
+/// @brief CAN初始化
 void CanInit() {
-    //注册中断回调函数 @warning 中断注册须在启动接收前
-    //HAL_CAN_RegisterCallback(kMotorCan, HAL_CAN_RX_FIFO0_MSG_PENDING_CB_ID, CanCallBack);
-    //HAL_CAN_RegisterCallback(kCapacityCan, HAL_CAN_RX_FIFO0_MSG_PENDING_CB_ID, CanCallBack);
 
     CAN_FilterTypeDef CAN_FilterInitStructure1{0};
 

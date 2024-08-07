@@ -1,3 +1,13 @@
+/**
+ * @file dji_motor.cpp
+ * @author XMX
+ * @brief 大疆系列电机函数及类方法
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "dji_motor.hpp"
 #include <stdlib.h>
 #include "can.h"
@@ -7,7 +17,7 @@
 
 /**
  * @brief 编码器实际改变值计算
- * @return 
+ * @return 改变值
  */
 int16_t DjiMotor::IntegralErrorCompute() {
     int16_t res1 = 0, res2 = 0;
@@ -124,6 +134,8 @@ int32_t DjiMotor::AbsoluteErrorCompute(uint16_t target, enum DirectionType direc
 }
 
 uint8_t motor_tx_buf[2][8]{0};  //@notice 第一个是0x200用的，第二个是0x1FF用的
+
+/// @brief 电机数据发送
 void DjiMotorSend() {
 
     //各电机输入值写入电机控制报文
@@ -223,11 +235,13 @@ void DjiMotorSend() {
     tx_header[1].DLC = 8;
     tx_header[1].TransmitGlobalTime = DISABLE;
 
-    //@warning 一个电机进行发送即可 不要多个电机对象发送 因为几个电机都使用同一个CAN
     HAL_CAN_AddTxMessage(kMotorCan, &tx_header[0], motor_tx_buf[0], (uint32_t*)CAN_TX_MAILBOX0);
     HAL_CAN_AddTxMessage(kMotorCan, &tx_header[1], motor_tx_buf[1], (uint32_t*)CAN_TX_MAILBOX1);
 }
 
+/// @brief 编码器值转角度值
+/// @param encoder_value 编码器值
+/// @return 角度值
 static float EncoderToAngle(uint16_t encoder_value) {
     return ((float)encoder_value / 8192) * 360.0f;
 }

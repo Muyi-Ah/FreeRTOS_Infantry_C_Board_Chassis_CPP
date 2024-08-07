@@ -1,9 +1,20 @@
+/**
+ * @file power_limit.cpp
+ * @author XMX
+ * @brief 串联超级电容的功率限制算法（未经完全测试）
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "power_limit.hpp"
 #include "config.hpp"
 #include "variables.hpp"
 
 float maximum_power;
 
+/// @brief 功率限制
 void PowerCare() {
     //各电机电流
     auto i1 = motor_201.actual_current_;

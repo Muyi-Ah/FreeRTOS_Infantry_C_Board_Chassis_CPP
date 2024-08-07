@@ -8,7 +8,6 @@
  * @copyright Copyright (c) 2024
  * 
  */
-
 #include "capacity_task.hpp"
 #include "FreeRTOS.h"
 #include "cmsis_os2.h"
@@ -42,7 +41,7 @@ void CapacityAskTask(void* argument) {
 }
 
 /**
- * @brief 电容充电功率发送任务（未使用）
+ * @brief 电容充电功率发送任务（未使用 ——2024/8/7）
  * 
  * @param argument 
  */
