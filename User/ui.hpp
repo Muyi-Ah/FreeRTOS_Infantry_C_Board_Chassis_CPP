@@ -10,14 +10,14 @@ constexpr auto kFiveFigureSize = 75;
 constexpr auto kSevenFigureSize = 105;
 constexpr auto kCharacterFigureSize = 15;
 
-//  ============ UIå›¾å±‚æ“ä½œ ===========
+//  ============ UIÍ¼²ã²Ù×÷ ===========
 constexpr auto kNoneOperate = 0;
 constexpr auto kAddOperate = 1;
 constexpr auto kUpdateOperate = 2;
 constexpr auto kDeleteOperate = 3;
 //  ===================================
 
-//  ============ UIå›¾å½¢ç±»å‹ ===========
+//  ============ UIÍ¼ĞÎÀàĞÍ ===========
 constexpr auto kLine = 0;
 constexpr auto kRect = 1;
 constexpr auto kRound = 2;
@@ -28,7 +28,7 @@ constexpr auto kNumber = 6;
 constexpr auto kText = 7;
 //  ===================================
 
-//  ============ UIå›¾å½¢é¢œè‰² ===========
+//  ============ UIÍ¼ĞÎÑÕÉ« ===========
 constexpr auto kMine = 0;
 constexpr auto kYellow = 1;
 constexpr auto kGreen = 2;
@@ -63,7 +63,7 @@ enum OperateType {
 };
 
 /**
- * @brief å›¾å±‚åˆ é™¤
+ * @brief Í¼²ãÉ¾³ı
  * 
  */
 __PACKED_STRUCT interaction_layer_delete_t {
@@ -72,7 +72,7 @@ __PACKED_STRUCT interaction_layer_delete_t {
 };
 
 /**
- * @brief å›¾å½¢é…ç½®
+ * @brief Í¼ĞÎÅäÖÃ
  * 
  */
 __PACKED_STRUCT interaction_figure_t {
@@ -92,7 +92,7 @@ __PACKED_STRUCT interaction_figure_t {
 };
 
 /**
- * @brief ä¸¤ä¸ªå›¾å½¢
+ * @brief Á½¸öÍ¼ĞÎ
  * 
  */
 __PACKED_STRUCT interaction_figure_2_t {
@@ -100,7 +100,7 @@ __PACKED_STRUCT interaction_figure_2_t {
 };
 
 /**
- * @brief äº”ä¸ªå›¾å½¢
+ * @brief Îå¸öÍ¼ĞÎ
  * 
  */
 __PACKED_STRUCT interaction_figure_3_t {
@@ -108,7 +108,7 @@ __PACKED_STRUCT interaction_figure_3_t {
 };
 
 /**
- * @brief ä¸ƒä¸ªå›¾å½¢
+ * @brief Æß¸öÍ¼ĞÎ
  * 
  */
 __PACKED_STRUCT interaction_figure_4_t {
@@ -116,7 +116,7 @@ __PACKED_STRUCT interaction_figure_4_t {
 };
 
 /**
- * @brief å­—ç¬¦
+ * @brief ×Ö·û
  * 
  */
 __PACKED_STRUCT interaction_character_t {

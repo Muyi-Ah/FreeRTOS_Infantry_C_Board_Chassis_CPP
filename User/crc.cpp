@@ -22,11 +22,11 @@ const uint8_t CRC8_TAB[256] = {
 };
 
 /**
- * @description: è·å–CRC8æ ¡éªŒå’Œ
+ * @description: »ñÈ¡CRC8Ğ£ÑéºÍ
  * @param {uint8_t} *pchMessage
  * @param {uint32_t} dwLength
  * @param {uint8_t} ucCRC8
- * @return {uint8_t} CRC8æ ¡éªŒå’Œ
+ * @return {uint8_t} CRC8Ğ£ÑéºÍ
  */
 uint8_t Get_CRC8_Check_Sum(uint8_t* pchMessage, uint32_t dwLength, uint8_t ucCRC8) {
     uint8_t ucIndex;
@@ -38,10 +38,10 @@ uint8_t Get_CRC8_Check_Sum(uint8_t* pchMessage, uint32_t dwLength, uint8_t ucCRC
 }
 
 /**
- * @description: æ ¡éªŒCRC8
+ * @description: Ğ£ÑéCRC8
  * @param {uint8_t} *pchMessage
  * @param {uint32_t} dwLength
- * @return {uint32_t} 1è¡¨ç¤ºç¤ºæ ¡éªŒé€šè¿‡ï¼Œ0è¡¨ç¤ºæ ¡éªŒå¤±è´¥
+ * @return {uint32_t} 1±íÊ¾Ê¾Ğ£ÑéÍ¨¹ı£¬0±íÊ¾Ğ£ÑéÊ§°Ü
  */
 uint32_t Verify_CRC8_Check_Sum(uint8_t* pchMessage, uint32_t dwLength) {
     uint8_t ucExpected = 0;
@@ -52,7 +52,7 @@ uint32_t Verify_CRC8_Check_Sum(uint8_t* pchMessage, uint32_t dwLength) {
 }
 
 /**
- * @description: æ·»åŠ CRC8æ ¡éªŒå’Œ
+ * @description: Ìí¼ÓCRC8Ğ£ÑéºÍ
  * @param {uint8_t} *pchMessage
  * @param {uint32_t} dwLength
  * @return {void}
@@ -91,11 +91,11 @@ const uint16_t wCRC_Table[256] = {
     0x3de3, 0x2c6a, 0x1ef1, 0x0f78};
 
 /**
- * @description: è·å–CRC16æ ¡éªŒå’Œ
+ * @description: »ñÈ¡CRC16Ğ£ÑéºÍ
  * @param {uint8_t} *pchMessage
  * @param {uint32_t} dwLength
  * @param {uint16_t} wCRC
- * @return {uint16_t} CRC16æ ¡éªŒå’Œ
+ * @return {uint16_t} CRC16Ğ£ÑéºÍ
  */
 uint16_t Get_CRC16_Check_Sum(uint8_t* pchMessage, uint32_t dwLength, uint16_t wCRC) {
     uint8_t chData;
@@ -111,10 +111,10 @@ uint16_t Get_CRC16_Check_Sum(uint8_t* pchMessage, uint32_t dwLength, uint16_t wC
 }
 
 /**
- * @description: æ ¡éªŒCRC16
+ * @description: Ğ£ÑéCRC16
  * @param {uint8_t} *pchMessage
  * @param {uint32_t} dwLength
- * @return {uint32_t} 1è¡¨ç¤ºç¤ºæ ¡éªŒé€šè¿‡ï¼Œ0è¡¨ç¤ºæ ¡éªŒå¤±è´¥
+ * @return {uint32_t} 1±íÊ¾Ê¾Ğ£ÑéÍ¨¹ı£¬0±íÊ¾Ğ£ÑéÊ§°Ü
  */
 uint32_t Verify_CRC16_Check_Sum(uint8_t* pchMessage, uint32_t dwLength) {
     uint16_t wExpected = 0;
@@ -127,7 +127,7 @@ uint32_t Verify_CRC16_Check_Sum(uint8_t* pchMessage, uint32_t dwLength) {
 }
 
 /**
- * @description: æ·»åŠ CRC16æ ¡éªŒå’Œ
+ * @description: Ìí¼ÓCRC16Ğ£ÑéºÍ
  * @param {uint8_t *} pchMessage
  * @param {uint32_t} dwLength
  * @return {void}

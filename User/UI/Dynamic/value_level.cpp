@@ -12,10 +12,10 @@ void var_level_add_config() {
     var_level.figure_tpye = kNumber;
     var_level.layer = 1;
     var_level.color = kCyan;
-    var_level.details_a = 30;
-    var_level.width = 3;
-    var_level.start_x = 350;
-    var_level.start_y = 800;
+    var_level.details_a = 25;
+    var_level.width = 2;
+    var_level.start_x = 400;
+    var_level.start_y = 750;
     var_level.details_c = 0;
     var_level.details_d = 0;
     var_level.details_e = 0;

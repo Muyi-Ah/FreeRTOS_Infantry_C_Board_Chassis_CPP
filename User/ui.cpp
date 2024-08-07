@@ -1,3 +1,13 @@
+/**
+ * @file ui.cpp
+ * @author XMX
+ * @brief UIÀà·½·¨
+ * @version 1.0
+ * @date 2024-08-07
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "ui.hpp"
 #include <cstring>
 #include "crc.hpp"
@@ -5,12 +15,12 @@
 /**
  * @brief Construct a new UILayerDelete::UILayerDelete object
  * 
- * @param sender_id å‘é€è€…ID
- * @param receiver_id æ¥æ”¶è€…ID
+ * @param sender_id ·¢ËÍÕßID
+ * @param receiver_id ½ÓÊÕÕßID
  */
 UILayerDelete::UILayerDelete(uint16_t sender_id, uint16_t receiver_id) {
 
-    header.SOF = 0xA5;  //å¸§å¤´å›ºå®šä¸º0xA5
+    header.SOF = 0xA5;  //Ö¡Í·¹Ì¶¨Îª0xA5
     header.data_length = sizeof(robot_interaction_data);
 
     robot_interaction_data.data_cmd_id = 0x0100;
@@ -19,11 +29,11 @@ UILayerDelete::UILayerDelete(uint16_t sender_id, uint16_t receiver_id) {
 }
 
 /**
- * @brief å›¾å½¢åˆ é™¤é…ç½®
+ * @brief Í¼ĞÎÉ¾³ıÅäÖÃ
  * 
- * @param str åç§°
- * @param type åˆ é™¤ç±»å‹
- * @param layer å±‚æ•°
+ * @param str Ãû³Æ
+ * @param type É¾³ıÀàĞÍ
+ * @param layer ²ãÊı
  */
 void UILayerDelete::Config(DeleteType type, uint8_t layer) {
     interaction_layer_delete_t* interaction_layer_delete =
@@ -34,27 +44,27 @@ void UILayerDelete::Config(DeleteType type, uint8_t layer) {
 
 uint8_t delete_buf[17]{0};
 /**
- * @brief å›¾å±‚åˆ é™¤å‘é€
+ * @brief Í¼²ãÉ¾³ı·¢ËÍ
  * 
  */
 void UILayerDelete::Send() {
     const auto length =
         sizeof(frame_header) + sizeof(cmd_id) + sizeof(robot_interaction_data) + sizeof(frame_tail);
 
-    //copy headerè‡³å‘é€æ•°ç»„
+    //copy headerÖÁ·¢ËÍÊı×é
     memcpy(delete_buf, &header, sizeof(frame_header));
 
     header.seq++;
 
-    Append_CRC8_Check_Sum(delete_buf, sizeof(frame_header));  //æ·»åŠ CRC8æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC8_Check_Sum(delete_buf, sizeof(frame_header));  //Ìí¼ÓCRC8Ğ£ÑéÖÁ·¢ËÍÊı×é
 
-    //copy cmd_idè‡³å‘é€æ•°ç»„
+    //copy cmd_idÖÁ·¢ËÍÊı×é
     memcpy(delete_buf + sizeof(frame_header), &cmd_id, sizeof(cmd_id));
-    //copy dataè‡³å‘é€æ•°ç»„
+    //copy dataÖÁ·¢ËÍÊı×é
     memcpy(delete_buf + sizeof(frame_header) + sizeof(cmd_id), &robot_interaction_data,
            sizeof(robot_interaction_data));
 
-    Append_CRC16_Check_Sum(delete_buf, length);  //æ·»åŠ CRC16æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC16_Check_Sum(delete_buf, length);  //Ìí¼ÓCRC16Ğ£ÑéÖÁ·¢ËÍÊı×é
 
     HAL_UART_Transmit_DMA(kRefereeUart, delete_buf, sizeof(delete_buf));
 }
@@ -62,11 +72,11 @@ void UILayerDelete::Send() {
 /**
  * @brief Construct a new UIOneFigure::UIOneFigure object
  * 
- * @param sender_id å‘é€è€…ID
- * @param receiver_id æ¥æ”¶è€…ID
+ * @param sender_id ·¢ËÍÕßID
+ * @param receiver_id ½ÓÊÕÕßID
  */
 UIOneFigure::UIOneFigure(uint16_t sender_id, uint16_t receiver_id) {
-    header.SOF = 0xA5;  //å¸§å¤´å›ºå®šä¸º0xA5
+    header.SOF = 0xA5;  //Ö¡Í·¹Ì¶¨Îª0xA5
     header.data_length = sizeof(robot_interaction_data);
 
     robot_interaction_data.data_cmd_id = 0x0101;
@@ -75,9 +85,9 @@ UIOneFigure::UIOneFigure(uint16_t sender_id, uint16_t receiver_id) {
 }
 
 /**
- * @brief ä¸€ä¸ªå›¾å½¢å‘é€é…ç½®
+ * @brief Ò»¸öÍ¼ĞÎ·¢ËÍÅäÖÃ
  * 
- * @param interaction_figure å›¾å½¢é…ç½®ç»“æ„ä½“
+ * @param interaction_figure Í¼ĞÎÅäÖÃ½á¹¹Ìå
  */
 void UIOneFigure::Config(interaction_figure_t* interaction_figure) {
     memcpy((uint8_t*)&robot_interaction_data.user_data, interaction_figure,
@@ -86,27 +96,27 @@ void UIOneFigure::Config(interaction_figure_t* interaction_figure) {
 
 uint8_t one_figure_buf[30]{0};
 /**
- * @brief ä¸€ä¸ªå›¾å½¢å‘é€
+ * @brief Ò»¸öÍ¼ĞÎ·¢ËÍ
  * 
  */
 void UIOneFigure::Send() {
     const auto length =
         sizeof(frame_header) + sizeof(cmd_id) + sizeof(robot_interaction_data) + sizeof(frame_tail);
 
-    //copy headerè‡³å‘é€æ•°ç»„
+    //copy headerÖÁ·¢ËÍÊı×é
     memcpy(one_figure_buf, &header, sizeof(frame_header));
 
     header.seq++;
 
-    Append_CRC8_Check_Sum(one_figure_buf, sizeof(frame_header));  //æ·»åŠ CRC8æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC8_Check_Sum(one_figure_buf, sizeof(frame_header));  //Ìí¼ÓCRC8Ğ£ÑéÖÁ·¢ËÍÊı×é
 
-    //copy cmd_idè‡³å‘é€æ•°ç»„
+    //copy cmd_idÖÁ·¢ËÍÊı×é
     memcpy(one_figure_buf + sizeof(frame_header), &cmd_id, sizeof(cmd_id));
-    //copy dataè‡³å‘é€æ•°ç»„
+    //copy dataÖÁ·¢ËÍÊı×é
     memcpy(one_figure_buf + sizeof(frame_header) + sizeof(cmd_id), &robot_interaction_data,
            sizeof(robot_interaction_data));
 
-    Append_CRC16_Check_Sum(one_figure_buf, length);  //æ·»åŠ CRC16æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC16_Check_Sum(one_figure_buf, length);  //Ìí¼ÓCRC16Ğ£ÑéÖÁ·¢ËÍÊı×é
 
     HAL_UART_Transmit_DMA(kRefereeUart, one_figure_buf, sizeof(one_figure_buf));
 }
@@ -114,11 +124,11 @@ void UIOneFigure::Send() {
 /**
  * @brief Construct a new UITwoFigure::UITwoFigure object
  * 
- * @param sender_id å‘é€è€…ID
- * @param receiver_id æ¥æ”¶è€…ID
+ * @param sender_id ·¢ËÍÕßID
+ * @param receiver_id ½ÓÊÕÕßID
  */
 UITwoFigure::UITwoFigure(uint16_t sender_id, uint16_t receiver_id) {
-    header.SOF = 0xA5;  //å¸§å¤´å›ºå®šä¸º0xA5
+    header.SOF = 0xA5;  //Ö¡Í·¹Ì¶¨Îª0xA5
     header.data_length = sizeof(robot_interaction_data);
 
     robot_interaction_data.data_cmd_id = 0x0102;
@@ -127,9 +137,9 @@ UITwoFigure::UITwoFigure(uint16_t sender_id, uint16_t receiver_id) {
 }
 
 /**
- * @brief ä¸¤ä¸ªå›¾å½¢å‘é€é…ç½®
+ * @brief Á½¸öÍ¼ĞÎ·¢ËÍÅäÖÃ
  * 
- * @param interaction_figure å›¾å½¢é…ç½®ç»“æ„ä½“
+ * @param interaction_figure Í¼ĞÎÅäÖÃ½á¹¹Ìå
  */
 void UITwoFigure::Config(interaction_figure_t* interaction_figure1,
                          interaction_figure_t* interaction_figure2) {
@@ -141,27 +151,27 @@ void UITwoFigure::Config(interaction_figure_t* interaction_figure1,
 
 uint8_t two_figure_buf[45]{0};
 /**
- * @brief ä¸¤ä¸ªå›¾å½¢å‘é€
+ * @brief Á½¸öÍ¼ĞÎ·¢ËÍ
  * 
  */
 void UITwoFigure::Send() {
     const auto length =
         sizeof(frame_header) + sizeof(cmd_id) + sizeof(robot_interaction_data) + sizeof(frame_tail);
 
-    //copy headerè‡³å‘é€æ•°ç»„
+    //copy headerÖÁ·¢ËÍÊı×é
     memcpy(two_figure_buf, &header, sizeof(frame_header));
 
     header.seq++;
 
-    Append_CRC8_Check_Sum(two_figure_buf, sizeof(frame_header));  //æ·»åŠ CRC8æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC8_Check_Sum(two_figure_buf, sizeof(frame_header));  //Ìí¼ÓCRC8Ğ£ÑéÖÁ·¢ËÍÊı×é
 
-    //copy cmd_idè‡³å‘é€æ•°ç»„
+    //copy cmd_idÖÁ·¢ËÍÊı×é
     memcpy(two_figure_buf + sizeof(frame_header), &cmd_id, sizeof(cmd_id));
-    //copy dataè‡³å‘é€æ•°ç»„
+    //copy dataÖÁ·¢ËÍÊı×é
     memcpy(two_figure_buf + sizeof(frame_header) + sizeof(cmd_id), &robot_interaction_data,
            sizeof(robot_interaction_data));
 
-    Append_CRC16_Check_Sum(two_figure_buf, length);  //æ·»åŠ CRC16æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC16_Check_Sum(two_figure_buf, length);  //Ìí¼ÓCRC16Ğ£ÑéÖÁ·¢ËÍÊı×é
 
     HAL_UART_Transmit_DMA(kRefereeUart, two_figure_buf, sizeof(two_figure_buf));
 }
@@ -169,11 +179,11 @@ void UITwoFigure::Send() {
 /**
  * @brief Construct a new UIFiveFigure::UIFiveFigure object
  * 
- * @param sender_id å‘é€è€…ID
- * @param receiver_id æ¥æ”¶è€…ID
+ * @param sender_id ·¢ËÍÕßID
+ * @param receiver_id ½ÓÊÕÕßID
  */
 UIFiveFigure::UIFiveFigure(uint16_t sender_id, uint16_t receiver_id) {
-    header.SOF = 0xA5;  //å¸§å¤´å›ºå®šä¸º0xA5
+    header.SOF = 0xA5;  //Ö¡Í·¹Ì¶¨Îª0xA5
     header.data_length = sizeof(robot_interaction_data);
 
     robot_interaction_data.data_cmd_id = 0x0103;
@@ -182,9 +192,9 @@ UIFiveFigure::UIFiveFigure(uint16_t sender_id, uint16_t receiver_id) {
 }
 
 /**
- * @brief äº”ä¸ªå›¾å½¢å‘é€é…ç½®
+ * @brief Îå¸öÍ¼ĞÎ·¢ËÍÅäÖÃ
  * 
- * @param interaction_figure å›¾å½¢é…ç½®ç»“æ„ä½“
+ * @param interaction_figure Í¼ĞÎÅäÖÃ½á¹¹Ìå
  */
 void UIFiveFigure::Config(interaction_figure_t* interaction_figure1,
                           interaction_figure_t* interaction_figure2,
@@ -206,7 +216,7 @@ void UIFiveFigure::Config(interaction_figure_t* interaction_figure1,
 uint8_t five_figure_buf[90]{0};
 int len;
 /**
- * @brief äº”ä¸ªå›¾å½¢å‘é€
+ * @brief Îå¸öÍ¼ĞÎ·¢ËÍ
  * 
  */
 void UIFiveFigure::Send() {
@@ -215,20 +225,20 @@ void UIFiveFigure::Send() {
 
     len = length;
 
-    //copy headerè‡³å‘é€æ•°ç»„
+    //copy headerÖÁ·¢ËÍÊı×é
     memcpy(five_figure_buf, &header, sizeof(frame_header));
 
     header.seq++;
 
-    Append_CRC8_Check_Sum(five_figure_buf, sizeof(frame_header));  //æ·»åŠ CRC8æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC8_Check_Sum(five_figure_buf, sizeof(frame_header));  //Ìí¼ÓCRC8Ğ£ÑéÖÁ·¢ËÍÊı×é
 
-    //copy cmd_idè‡³å‘é€æ•°ç»„
+    //copy cmd_idÖÁ·¢ËÍÊı×é
     memcpy(five_figure_buf + sizeof(frame_header), &cmd_id, sizeof(cmd_id));
-    //copy dataè‡³å‘é€æ•°ç»„
+    //copy dataÖÁ·¢ËÍÊı×é
     memcpy(five_figure_buf + sizeof(frame_header) + sizeof(cmd_id), &robot_interaction_data,
            sizeof(robot_interaction_data));
 
-    Append_CRC16_Check_Sum(five_figure_buf, length);  //æ·»åŠ CRC16æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC16_Check_Sum(five_figure_buf, length);  //Ìí¼ÓCRC16Ğ£ÑéÖÁ·¢ËÍÊı×é
 
     HAL_UART_Transmit_DMA(kRefereeUart, five_figure_buf, sizeof(five_figure_buf));
 }
@@ -236,11 +246,11 @@ void UIFiveFigure::Send() {
 /**
  * @brief Construct a new UISevenFigure::UISevenFigure object
  * 
- * @param sender_id å‘é€è€…ID
- * @param receiver_id æ¥æ”¶è€…ID
+ * @param sender_id ·¢ËÍÕßID
+ * @param receiver_id ½ÓÊÕÕßID
  */
 UISevenFigure::UISevenFigure(uint16_t sender_id, uint16_t receiver_id) {
-    header.SOF = 0xA5;  //å¸§å¤´å›ºå®šä¸º0xA5
+    header.SOF = 0xA5;  //Ö¡Í·¹Ì¶¨Îª0xA5
     header.data_length = sizeof(robot_interaction_data);
 
     robot_interaction_data.data_cmd_id = 0x0104;
@@ -249,9 +259,9 @@ UISevenFigure::UISevenFigure(uint16_t sender_id, uint16_t receiver_id) {
 }
 
 /**
- * @brief ä¸ƒä¸ªå›¾å½¢å‘é€é…ç½®
+ * @brief Æß¸öÍ¼ĞÎ·¢ËÍÅäÖÃ
  * 
- * @param interaction_figure å›¾å½¢é…ç½®ç»“æ„ä½“
+ * @param interaction_figure Í¼ĞÎÅäÖÃ½á¹¹Ìå
  */
 void UISevenFigure::Config(interaction_figure_t* interaction_figure1,
                            interaction_figure_t* interaction_figure2,
@@ -278,27 +288,27 @@ void UISevenFigure::Config(interaction_figure_t* interaction_figure1,
 
 uint8_t seven_figure_buf[120]{0};
 /**
- * @brief ä¸ƒä¸ªå›¾å½¢å‘é€
+ * @brief Æß¸öÍ¼ĞÎ·¢ËÍ
  * 
  */
 void UISevenFigure::Send() {
     const auto length =
         sizeof(frame_header) + sizeof(cmd_id) + sizeof(robot_interaction_data) + sizeof(frame_tail);
 
-    //copy headerè‡³å‘é€æ•°ç»„
+    //copy headerÖÁ·¢ËÍÊı×é
     memcpy(seven_figure_buf, &header, sizeof(frame_header));
 
     header.seq++;
 
-    Append_CRC8_Check_Sum(seven_figure_buf, sizeof(frame_header));  //æ·»åŠ CRC8æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC8_Check_Sum(seven_figure_buf, sizeof(frame_header));  //Ìí¼ÓCRC8Ğ£ÑéÖÁ·¢ËÍÊı×é
 
-    //copy cmd_idè‡³å‘é€æ•°ç»„
+    //copy cmd_idÖÁ·¢ËÍÊı×é
     memcpy(seven_figure_buf + sizeof(frame_header), &cmd_id, sizeof(cmd_id));
-    //copy dataè‡³å‘é€æ•°ç»„
+    //copy dataÖÁ·¢ËÍÊı×é
     memcpy(seven_figure_buf + sizeof(frame_header) + sizeof(cmd_id), &robot_interaction_data,
            sizeof(robot_interaction_data));
 
-    Append_CRC16_Check_Sum(seven_figure_buf, length);  //æ·»åŠ CRC16æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC16_Check_Sum(seven_figure_buf, length);  //Ìí¼ÓCRC16Ğ£ÑéÖÁ·¢ËÍÊı×é
 
     HAL_UART_Transmit_DMA(kRefereeUart, seven_figure_buf, sizeof(seven_figure_buf));
 }
@@ -306,11 +316,11 @@ void UISevenFigure::Send() {
 /**
  * @brief Construct a new UIcharacterFigure::UIcharacterFigure object
  * 
- * @param sender_id å‘é€è€…ID
- * @param receiver_id æ¥æ”¶è€…ID
+ * @param sender_id ·¢ËÍÕßID
+ * @param receiver_id ½ÓÊÕÕßID
  */
 UIcharacterFigure::UIcharacterFigure(uint16_t sender_id, uint16_t receiver_id) {
-    header.SOF = 0xA5;  //å¸§å¤´å›ºå®šä¸º0xA5
+    header.SOF = 0xA5;  //Ö¡Í·¹Ì¶¨Îª0xA5
     header.data_length = sizeof(robot_interaction_data);
 
     robot_interaction_data.data_cmd_id = 0x0110;
@@ -319,9 +329,9 @@ UIcharacterFigure::UIcharacterFigure(uint16_t sender_id, uint16_t receiver_id) {
 }
 
 /**
- * @brief å­—ç¬¦å‘é€é…ç½®
+ * @brief ×Ö·û·¢ËÍÅäÖÃ
  * 
- * @param interaction_figure å›¾å½¢é…ç½®ç»“æ„ä½“
+ * @param interaction_figure Í¼ĞÎÅäÖÃ½á¹¹Ìå
  */
 void UIcharacterFigure::config(interaction_figure_t* interaction_figure) {
     memcpy((uint8_t*)&robot_interaction_data.user_data, interaction_figure,
@@ -330,27 +340,27 @@ void UIcharacterFigure::config(interaction_figure_t* interaction_figure) {
 
 uint8_t character_buf[60]{0};
 /**
- * @brief å­—ç¬¦å‘é€
+ * @brief ×Ö·û·¢ËÍ
  * 
  */
 void UIcharacterFigure::Send() {
     const auto length =
         sizeof(frame_header) + sizeof(cmd_id) + sizeof(robot_interaction_data) + sizeof(frame_tail);
 
-    //copy headerè‡³å‘é€æ•°ç»„
+    //copy headerÖÁ·¢ËÍÊı×é
     memcpy(character_buf, &header, sizeof(frame_header));
 
     header.seq++;
 
-    Append_CRC8_Check_Sum(character_buf, sizeof(frame_header));  //æ·»åŠ CRC8æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC8_Check_Sum(character_buf, sizeof(frame_header));  //Ìí¼ÓCRC8Ğ£ÑéÖÁ·¢ËÍÊı×é
 
-    //copy cmd_idè‡³å‘é€æ•°ç»„
+    //copy cmd_idÖÁ·¢ËÍÊı×é
     memcpy(character_buf + sizeof(frame_header), &cmd_id, sizeof(cmd_id));
-    //copy dataè‡³å‘é€æ•°ç»„
+    //copy dataÖÁ·¢ËÍÊı×é
     memcpy(character_buf + sizeof(frame_header) + sizeof(cmd_id), &robot_interaction_data,
            sizeof(robot_interaction_data));
 
-    Append_CRC16_Check_Sum(character_buf, length);  //æ·»åŠ CRC16æ ¡éªŒè‡³å‘é€æ•°ç»„
+    Append_CRC16_Check_Sum(character_buf, length);  //Ìí¼ÓCRC16Ğ£ÑéÖÁ·¢ËÍÊı×é
 
     HAL_UART_Transmit_DMA(kRefereeUart, character_buf, sizeof(character_buf));
 }

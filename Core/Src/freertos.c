@@ -61,10 +61,10 @@ const osThreadAttr_t chassisTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
-/* Definitions for capacityTask */
-osThreadId_t capacityTaskHandle;
-const osThreadAttr_t capacityTask_attributes = {
-  .name = "capacityTask",
+/* Definitions for capacityAskTask */
+osThreadId_t capacityAskTaskHandle;
+const osThreadAttr_t capacityAskTask_attributes = {
+  .name = "capacityAskTask",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityAboveNormal,
 };
@@ -89,6 +89,20 @@ const osThreadAttr_t communicationTa_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
+/* Definitions for errorHandleTask */
+osThreadId_t errorHandleTaskHandle;
+const osThreadAttr_t errorHandleTask_attributes = {
+  .name = "errorHandleTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityBelowNormal,
+};
+/* Definitions for capacityChargeT */
+osThreadId_t capacityChargeTHandle;
+const osThreadAttr_t capacityChargeT_attributes = {
+  .name = "capacityChargeT",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal1,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -97,10 +111,12 @@ const osThreadAttr_t communicationTa_attributes = {
 
 void StartDefaultTask(void *argument);
 extern void ChassisTask(void *argument);
-extern void CapacityTask(void *argument);
+extern void CapacityAskTask(void *argument);
 extern void UITask(void *argument);
 extern void RefereeDetectTask(void *argument);
 extern void CommunicationTask(void *argument);
+extern void ErrorHandleTask(void *argument);
+extern void CapacityChargeTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -137,8 +153,8 @@ void MX_FREERTOS_Init(void) {
   /* creation of chassisTask */
   chassisTaskHandle = osThreadNew(ChassisTask, NULL, &chassisTask_attributes);
 
-  /* creation of capacityTask */
-  capacityTaskHandle = osThreadNew(CapacityTask, NULL, &capacityTask_attributes);
+  /* creation of capacityAskTask */
+  capacityAskTaskHandle = osThreadNew(CapacityAskTask, NULL, &capacityAskTask_attributes);
 
   /* creation of uiTask */
   uiTaskHandle = osThreadNew(UITask, NULL, &uiTask_attributes);
@@ -148,6 +164,12 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of communicationTa */
   communicationTaHandle = osThreadNew(CommunicationTask, NULL, &communicationTa_attributes);
+
+  /* creation of errorHandleTask */
+  errorHandleTaskHandle = osThreadNew(ErrorHandleTask, NULL, &errorHandleTask_attributes);
+
+  /* creation of capacityChargeT */
+  capacityChargeTHandle = osThreadNew(CapacityChargeTask, NULL, &capacityChargeT_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

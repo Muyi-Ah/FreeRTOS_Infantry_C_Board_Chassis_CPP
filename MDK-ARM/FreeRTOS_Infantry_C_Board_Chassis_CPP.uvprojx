@@ -694,6 +694,11 @@
               <FileType>8</FileType>
               <FilePath>..\User\ui.cpp</FilePath>
             </File>
+            <File>
+              <FileName>power_limit.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\power_limit.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -723,6 +728,16 @@
               <FileName>char_voltage.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\User\UI\Static\char_voltage.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>char_friction.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\UI\Static\char_friction.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>aimed_line.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\UI\Static\aimed_line.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -754,6 +769,21 @@
               <FileType>8</FileType>
               <FilePath>..\User\UI\Dynamic\value_voltage.cpp</FilePath>
             </File>
+            <File>
+              <FileName>chassis_angle_figure.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\UI\Dynamic\chassis_angle_figure.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>vision_aimed.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\UI\Dynamic\vision_aimed.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>chassis_follow_mode.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\UI\Dynamic\chassis_follow_mode.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -783,6 +813,11 @@
               <FileName>communication_task.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\User\Task\communication_task.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>error_handle_task.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\Task\error_handle_task.cpp</FilePath>
             </File>
           </Files>
         </Group>

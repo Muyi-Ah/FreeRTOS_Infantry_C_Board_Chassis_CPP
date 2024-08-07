@@ -51,12 +51,11 @@ class Referee {
     uint16_t recv_size;
     frame_header header;
     uint16_t cmd_id;
+    bool is_reply;
 
     robot_status_t robot_status;
     power_heat_data_t power_heat_data;
     hurt_data_t hurt_data;
 
     void FrameProcessing(uint8_t* buf);
-
-   private:
 };

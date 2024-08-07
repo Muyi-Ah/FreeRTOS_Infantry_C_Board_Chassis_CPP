@@ -11,10 +11,10 @@ void var_powerlimit_add_config() {
     var_powerlimit.figure_tpye = kNumber;
     var_powerlimit.layer = 1;
     var_powerlimit.color = kCyan;
-    var_powerlimit.details_a = 30;
-    var_powerlimit.width = 3;
-    var_powerlimit.start_x = 270;
-    var_powerlimit.start_y = 590;
+    var_powerlimit.details_a = 25;
+    var_powerlimit.width = 2;
+    var_powerlimit.start_x = 400;
+    var_powerlimit.start_y = 700;
     var_powerlimit.details_c = 0;
     var_powerlimit.details_d = 0;
     var_powerlimit.details_e = 0;

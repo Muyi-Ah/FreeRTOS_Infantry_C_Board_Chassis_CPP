@@ -12,12 +12,12 @@ void char_powerlimit_add_config(char* buf) {
     char_powerlimit.figure_tpye = kText;
     char_powerlimit.layer = 0;
     char_powerlimit.color = kGreen;
-    char_powerlimit.details_a = 30;
-    char_powerlimit.details_b = 12;
-    char_powerlimit.width = 3;
-    char_powerlimit.start_x = 90;
-    char_powerlimit.start_y = 660;
-    strcpy(buf, "Power_limit:");
+    char_powerlimit.details_a = 25;
+    char_powerlimit.details_b = 6;
+    char_powerlimit.width = 2;
+    char_powerlimit.start_x = 230;
+    char_powerlimit.start_y = 700;
+    strcpy(buf, "Power:");
 }
 
 void char_powerlimit_delete_config() {

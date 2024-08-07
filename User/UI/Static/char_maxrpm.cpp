@@ -12,11 +12,11 @@ void char_maxrpm_add_config(char* buf) {
     char_maxrpm.figure_tpye = kText;
     char_maxrpm.layer = 0;
     char_maxrpm.color = kGreen;
-    char_maxrpm.details_a = 30;
+    char_maxrpm.details_a = 25;
     char_maxrpm.details_b = 7;
-    char_maxrpm.width = 3;
-    char_maxrpm.start_x = 90;
-    char_maxrpm.start_y = 730;
+    char_maxrpm.width = 2;
+    char_maxrpm.start_x = 230;
+    char_maxrpm.start_y = 650;
     strcpy(buf, "Maxrpm:");
 }
 
